@@ -91,17 +91,21 @@ STATIC_ROOT=BASE_DIR/'staticfiles'
 import os
 from django.contrib.auth import get_user_model
 
-def create_superuser_automatically():
+def create_or_reset_superuser():
     User = get_user_model()
-    username = os.environ.get('ADMIN_USERNAME', 'admin')
-    email = os.environ.get('ADMIN_EMAIL', 'admin@example.com')
-    password = os.environ.get('ADMIN_PASSWORD', 'AdminPassword123!')
+    username = 'admin'
+    password = 'AdminPassword123!'
 
-    if not User.objects.filter(username=username).exists():
-        User.objects.create_superuser(username=username, email=email, password=password)
-        print(f"Superuser '{username}' created successfully!")
+    user, created = User.objects.get_or_create(
+        username=username,
+        defaults={'email': 'admin@example.com', 'is_staff': True, 'is_superuser': True}
+    )
+    user.is_staff = True
+    user.is_superuser = True
+    user.set_password(password)
+    user.save()
 
 try:
-    create_superuser_automatically()
-except Exception as e:
+    create_or_reset_superuser()
+except Exception:
     pass
