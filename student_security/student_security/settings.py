@@ -6,7 +6,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # 2. Security settings
 SECRET_KEY = 'django-insecure-your-secret-key-goes-here'
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['student-data-security.onrender.com','localhost','127.0.0.1']
 
 # 3. Installed applications
 INSTALLED_APPS = [
