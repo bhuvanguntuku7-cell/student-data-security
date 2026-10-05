@@ -86,3 +86,22 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = 'login'
 
 STATIC_ROOT=BASE_DIR/'staticfiles'
+
+
+import os
+from django.contrib.auth import get_user_model
+
+def create_superuser_automatically():
+    User = get_user_model()
+    username = os.environ.get('ADMIN_USERNAME', 'admin')
+    email = os.environ.get('ADMIN_EMAIL', 'admin@example.com')
+    password = os.environ.get('ADMIN_PASSWORD', 'AdminPassword123!')
+
+    if not User.objects.filter(username=username).exists():
+        User.objects.create_superuser(username=username, email=email, password=password)
+        print(f"Superuser '{username}' created successfully!")
+
+try:
+    create_superuser_automatically()
+except Exception as e:
+    pass
