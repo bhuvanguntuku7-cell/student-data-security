@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.contrib.auth import logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from .models import UserProfile, StudentRecord, ActivityLog
@@ -33,7 +34,7 @@ def register(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            # Create a UserProfile so they automatically get 'student' role
+            # Automatically assign the 'student' role upon registration
             UserProfile.objects.create(user=user, role='student')
             username = form.cleaned_data.get('username')
             messages.success(request, f'Account created for {username}! You can now log in.')
@@ -41,3 +42,9 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, 'register.html', {'form': form})
+
+
+def logout_view(request):
+    """Custom view to handle logout via both GET and POST without 405 errors."""
+    logout(request)
+    return redirect('login')
