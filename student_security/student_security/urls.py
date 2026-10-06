@@ -9,6 +9,7 @@ urlpatterns = [
     
     # Core Application Views
     path('', views.dashboard, name='dashboard'),
+    path('register/',views.register,name='register'),
     
     # Authentication Management
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),

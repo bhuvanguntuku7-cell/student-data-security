@@ -1,12 +1,14 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
 from .models import UserProfile, StudentRecord, ActivityLog
 
 @login_required
 def dashboard(request):
     profile, created = UserProfile.objects.get_or_create(user=request.user)
-    
+
     # Audit log entry for every dashboard access
     ActivityLog.objects.create(
         user=request.user,
@@ -17,10 +19,25 @@ def dashboard(request):
 
     if profile.role == 'student':
         # Limit dataset to the authenticated student's own record
-        context['record'] = StudentRecord.objects.filter(student_user=request.user).first()
+        context['record'] = StudentRecord.objects.filter(student_user=request.user)
     elif profile.role in ['admin', 'faculty']:
         # Broad access for administrative and faculty roles
         context['all_records'] = StudentRecord.objects.all()
-        context['activity_logs'] = ActivityLog.objects.all().order_by('-timestamp')[:10]
+        context['activity_logs'] = ActivityLog.objects.all().order_by('-timestamp')
 
     return render(request, 'dashboard.html', context)
+
+
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            # Create a UserProfile so they automatically get 'student' role
+            UserProfile.objects.create(user=user, role='student')
+            username = form.cleaned_data.get('username')
+            messages.success(request, f'Account created for {username}! You can now log in.')
+            return redirect('login')
+    else:
+        form = UserCreationForm()
+    return render(request, 'register.html', {'form': form})
