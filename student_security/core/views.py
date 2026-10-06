@@ -34,7 +34,7 @@ def register(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            # Automatically assign the 'student' role upon registration
+            # Automatically assign the student role to new sign-ups
             UserProfile.objects.create(user=user, role='student')
             username = form.cleaned_data.get('username')
             messages.success(request, f'Account created for {username}! You can now log in.')
@@ -45,6 +45,6 @@ def register(request):
 
 
 def logout_view(request):
-    """Custom view to handle logout via both GET and POST without 405 errors."""
+    """Custom view to handle logout via both GET and POST without HTTP 405 errors."""
     logout(request)
     return redirect('login')
