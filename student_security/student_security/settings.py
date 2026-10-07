@@ -6,7 +6,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # 2. Security settings
 SECRET_KEY = 'django-insecure-your-secret-key-goes-here'
 DEBUG = True
-ALLOWED_HOSTS = ['student-data-security.onrender.com','localhost','127.0.0.1']
+ALLOWED_HOSTS = ['student-data-security.onrender.com', 'localhost', '127.0.0.1']
 
 # 3. Installed applications
 INSTALLED_APPS = [
@@ -19,13 +19,13 @@ INSTALLED_APPS = [
     'core',  # Your application
 ]
 
-# 4. Middleware configuration
+# 4. Middleware configuration (Corrected Order)
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',  # Must be before CSRF & Auth
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -33,11 +33,11 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'student_security.urls'
 
-# 5. Templates configuration
+# 5. Templates configuration (DIRS fixed to point to BASE_DIR / 'templates')
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -76,6 +76,7 @@ USE_TZ = True
 
 # 9. Static files (CSS, JavaScript, Images)
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # 10. Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -85,7 +86,5 @@ LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = 'login'
 
-STATIC_ROOT=BASE_DIR/'staticfiles'
+# 12. CSRF Trusted Origins for Render Deployment
 CSRF_TRUSTED_ORIGINS = ['https://student-data-security.onrender.com']
-
-
