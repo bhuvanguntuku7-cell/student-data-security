@@ -19,12 +19,11 @@ def dashboard(request):
     context = {'profile': profile}
 
     if profile.role == 'student':
-    context['record'] = StudentRecord.objects.filter(student_user=request.user).first()
+        context['record'] = StudentRecord.objects.filter(student_user=request.user).first()
     elif profile.role in ['admin', 'faculty']:
         # Broad access for administrative and faculty roles
         context['all_records'] = StudentRecord.objects.all()
         context['activity_logs'] = ActivityLog.objects.all().order_by('-timestamp')
-
     return render(request, 'dashboard.html', context)
 
 
