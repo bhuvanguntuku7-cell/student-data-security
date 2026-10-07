@@ -86,26 +86,6 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = 'login'
 
 STATIC_ROOT=BASE_DIR/'staticfiles'
+CSRF_TRUSTED_ORIGINS = ['https://student-data-security.onrender.com']
 
 
-import os
-from django.contrib.auth import get_user_model
-
-def create_or_reset_superuser():
-    User = get_user_model()
-    username = 'admin'
-    password = 'AdminPassword123!'
-
-    user, created = User.objects.get_or_create(
-        username=username,
-        defaults={'email': 'admin@example.com', 'is_staff': True, 'is_superuser': True}
-    )
-    user.is_staff = True
-    user.is_superuser = True
-    user.set_password(password)
-    user.save()
-
-try:
-    create_or_reset_superuser()
-except Exception:
-    pass
