@@ -19,8 +19,7 @@ def dashboard(request):
     context = {'profile': profile}
 
     if profile.role == 'student':
-        # Limit dataset to the authenticated student's own record
-        context['record'] = StudentRecord.objects.filter(student_user=request.user)
+    context['record'] = StudentRecord.objects.filter(student_user=request.user).first()
     elif profile.role in ['admin', 'faculty']:
         # Broad access for administrative and faculty roles
         context['all_records'] = StudentRecord.objects.all()
